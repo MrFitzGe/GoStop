@@ -20,10 +20,13 @@ else:
 
 if num_brights >= 3:
     
+    bright_points = num_brights
+
     if "SadMan" & num_brights == 3:
         bright_points = 2
-
-    bright_points = num_brights-3 + 3
+    
+    if num_brights == 5:
+        bright_points = 15
 
 else:
     bright_points= 0
@@ -32,10 +35,10 @@ else:
 
 # More advanced point calculations
 
-points = points * 2^num_gos
+points = points * 2^num_go
 
 if Birds == 3:
     points += 5
 
-if num_brights = 5:
-    bright_points = bright_points*3
+if ribbons contain 3 of the same type:
+    ribbon_points = 5
