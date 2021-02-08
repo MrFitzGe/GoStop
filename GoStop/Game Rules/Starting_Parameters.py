@@ -1,4 +1,4 @@
-def switch():
+def get_starting_params():
     num_players = int(input("Enter Number of Players : ")) # it takes user input
     deck_size = 48
 
@@ -23,4 +23,4 @@ def switch():
  
  
  
-switch()
+get_starting_params()
