@@ -60,24 +60,47 @@ class Game:
         else:
             print("Unacceptable number of players")
                   
-    def deal(self):
-        for p in self.num_players:
-            self.player_hand[p] = Deck.draw_card(self.hand_size)
-                
-        self.common_cards = Deck.draw_card(self.number_starting_common_cards)
+    def deal_hand(self, Player):
+        Player.hand = Deck.draw_card(self.hand_size)
+              
+    def deal_common_cards(self):
+        self.common_cards = Deck.draw_card(self.number_starting_common_cards)    
                             
             
 class Player:
     
     def __init__(self):
-        self.player_hand = []
-        self.player_scoreboard = []
-        self.player_points= 0
-        self.player_num_go = 0
+        self.hand = pd.DataFrame() # dataframe of cards. Each row is a card in hand
+        self.scoreboard = pd.DataFrame() #dataframe of cards collected to be scored. Each row is a collected card.
+        self.points_accumulated = 0
+        self.num_go = 0
 
-    def play_card(self, which_card):
-        #check which_card in range (0:len(self.player_hand))
-        self.player_hand = self.player_hand - chosen_card
-        return chosen_card
+    def play_card(self, which_card, common_cards, play_position):
+        #check which_card in range (0:len(self.hand))
+        chosen_card = self.hand.iloc[[which_card]]
+        self.hand = self.hand.drop[[which_card]]
+        
+        if chosen_card['Month'] == common_cards.iloc[[play_position]]['Month']:
+            self.scoreboard.append(chosen_card)
+            self.scoreboard.append(common_cards.iloc[[play_position]])
+            
+            common_cards.drop[[play_position]]
+            Deck.draw_card(1)
+            
+        else:
+            common_cards.append(chosen_card)
+            Deck.draw_card(1)
+            
+            ##~ask Mike about crapping logic
+        
     
+    
+    def collect_cards(self, card_pairs):
+        self.scoreboard = self.scoreboard.append(card_pairs)
+        
+    def say_go(self):
+        self.num_go += 1
+    
+    def tally_points(self):
+        self.scoreboard ==> points.py
         
