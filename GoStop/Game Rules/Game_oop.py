@@ -10,7 +10,8 @@ import pandas as pd
 
 class Deck:
 # cards is the full map of all possible cards
-# deck is the current deck in play for one game. A shuffle call creates a deck.
+# deck is the current deck in play for one game.
+# A shuffle call creates a new deck.
 
 # To add, cut function
     def __init__(self):
@@ -35,7 +36,7 @@ class Deck:
 class Game:
     # Class for rules and interaction functions
     def __init__(self):
-        self.timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S") 
+        self.start_timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S") 
         
     def get_starting_params(self):
         self.num_players = int(input("Enter Number of Players : ")) # it takes user input
@@ -48,7 +49,7 @@ class Game:
             self.number_starting_common_cards = 8
 
         elif self.num_players == 3:
-            self.hand_size = 8
+            self.hand_size = 7
             self.points_threshold = 3
             self.number_starting_common_cards = 6
 
@@ -65,7 +66,13 @@ class Game:
               
     def deal_common_cards(self):
         self.common_cards = Deck.draw_card(self.number_starting_common_cards)    
-                            
+    
+    def end_game(self, Player, ...): # multiple players posisble
+        self.end_timestamp = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        for p in self.num_players:
+            Player[p].tally_points
+            print(Player[p].points_accumulated)
+            
             
 class Player:
     
@@ -91,10 +98,8 @@ class Player:
             common_cards.append(chosen_card)
             Deck.draw_card(1)
             
-            ##~ask Mike about crapping logic
+            ##~ask Mike about crapping logic and shake-boom free play options
         
-    
-    
     def collect_cards(self, card_pairs):
         self.scoreboard = self.scoreboard.append(card_pairs)
         
@@ -102,5 +107,72 @@ class Player:
         self.num_go += 1
     
     def tally_points(self):
-        self.scoreboard ==> points.py
+        # depends on self.scoreboard and self.num_go
+         #==> points.py
+        points = 0
+        scoreboard_crosstab = self.scoreboard['Group'].value_counts()
+
+        num_junks = scoreboard_crosstab.iloc['junk'] + self.scoreboard['Special'].value_counts().iloc['DoubleJunk']
+        num_animals = scoreboard_crosstab.iloc['animal']
+        num_ribbons = scoreboard_crosstab.iloc['ribbon']
+        num_brights = scoreboard_crosstab.iloc['junk']
         
+        # Basic point totals
+
+        if num_junks >= 10:
+            junk_points = num_junks - 9
+        else:
+            junk_points = 0
+            
+        if num_animals >= 5:
+            animal_points = num_animals - 4
+        else:
+            animal_points= 0
+
+        if num_ribbons >= 5:
+            ribbon_points = num_animals - 4
+        else:
+            ribbon_points= 0
+
+        if num_brights >= 3:
+            
+            bright_points = num_brights
+
+            if self.scoreboard.Special.isin(["SadMan"]) & num_brights == 3:
+                bright_points = 2
+            
+            if num_brights == 5:
+                bright_points = 15
+
+        else:
+            bright_points= 0
+
+        points = bright_points + animal_points + ribbon_points + junk_points
+
+        # More advanced point calculations
+
+        if self.scoreboard['Special'].value_counts().iloc['Bird'] == 3:
+            points += 5
+
+        if self.scoreboard['Special'].value_counts().iloc['Red_Writing'] == 3:
+            points += 3
+            
+        if self.scoreboard['Special'].value_counts().iloc['Blue_Writing'] == 3:
+            points += 3
+            
+        if self.scoreboard['Special'].value_counts().iloc['Red_Blank'] == 3:
+            points += 3
+
+        points = points * 2^self.num_go
+        
+        self.points_accumulated = points
+    
+    def go_or_stop(self, Game):
+         if self.points_accumulated >= Game.points_threshold & self.num_go == 0:
+            gs_response = input("Would you like to Go or Stop? : ")
+            current_points = self.points_accumulated
+            if gs_response = "Go":
+                 self.num_go += 1
+            else:
+                Game.end_game
+    
